@@ -10,6 +10,7 @@ import json
 import os
 import re
 import time
+from dotenv import load_dotenv
 
 import anthropic
 import httpx
@@ -17,18 +18,24 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-# Load config
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
-with open(CONFIG_PATH, "r") as f:
-    config = json.load(f)
+# Load .env file
+load_dotenv()
 
-ANTHROPIC_API_KEY = config["anthropic_api_key"]
-ELEVENLABS_API_KEY = config["elevenlabs_api_key"]
-ELEVENLABS_VOICE_ID = config.get("elevenlabs_voice_id", "rDmv3mOhK6TnhYWckFaD")
-USER_NAME = config.get("user_name", "Julian")
-USER_ADDRESS = config.get("user_address", "Sir")
-CITY = config.get("city", "Hamburg")
-TASKS_FILE = config.get("obsidian_inbox_path", "")
+# Load config with fallback to .env and config.json
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
+config = {}
+if os.path.exists(CONFIG_PATH):
+    with open(CONFIG_PATH, "r") as f:
+        config = json.load(f)
+
+# Environment variables override config.json
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", config.get("anthropic_api_key", ""))
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", config.get("elevenlabs_api_key", ""))
+ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", config.get("elevenlabs_voice_id", "EXAVITQdyfvUzqMuSe3m"))
+USER_NAME = os.getenv("USER_NAME", config.get("user_name", "Julian"))
+USER_ADDRESS = os.getenv("USER_ADDRESS", config.get("user_address", "Sir"))
+CITY = os.getenv("CITY", config.get("city", "Hamburg"))
+TASKS_FILE = os.getenv("OBSIDIAN_INBOX_PATH", config.get("obsidian_inbox_path", ""))
 
 ai = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
 http = httpx.AsyncClient(timeout=30)
