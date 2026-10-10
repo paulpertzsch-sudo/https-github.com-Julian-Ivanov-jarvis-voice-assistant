@@ -27,7 +27,7 @@ ELEVENLABS_API_KEY = config["elevenlabs_api_key"]
 ELEVENLABS_VOICE_ID = config.get("elevenlabs_voice_id", "rDmv3mOhK6TnhYWckFaD")
 USER_NAME = config.get("user_name", "Julian")
 USER_ADDRESS = config.get("user_address", "Sir")
-CITY = config.get("city", "Hamburg")
+CITY = config.get("city", "München")
 TASKS_FILE = config.get("obsidian_inbox_path", "")
 
 ai = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
